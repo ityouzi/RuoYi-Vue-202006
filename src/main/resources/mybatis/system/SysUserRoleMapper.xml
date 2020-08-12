@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ityouzi.project.system.mapper.SysUserRoleMapper">
+    <resultMap type="SysUserRole" id="SysUserRoleResult">
+        <result property="userId"     column="user_id"      />
+        <result property="roleId"     column="role_id"      />
+    </resultMap>
+
+    <!-- 批量新增 -->
+    <insert id="batchUserRole">
+        insert into sys_user_role(user_id, role_id) values
+        <foreach item="item" index="index" collection="list" separator=",">
+            (#{item.userId}, #{item.roleId})
+        </foreach>
+    </insert>
+
+    <!-- 通过用户ID删除用户和角色关联 -->
+    <delete id="deleteUserRoleByUserId" parameterType="long">
+        delete from sys_user_role where user_id = #{userId}
+    </delete>
+</mapper>    

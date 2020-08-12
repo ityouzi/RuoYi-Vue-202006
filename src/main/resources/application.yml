@@ -1,0 +1,82 @@
+# 项目相关配置
+ruoyi:
+  # 名称
+  name: RuoYi
+  # 版本
+  version: 2.0.0
+  # 版权年份
+  copyrightYear: 2020
+  # 实例演示开关
+  demoEnabled: true
+  # 文件路径 示例（ Windows配置D:/ruoyi/uploadPath，Linux配置 /home/ruoyi/uploadPath）
+  profile: D:/ruoyi/uploadPath
+  # 获取ip地址开关
+  addressEnabled: true
+
+# 开发环境配置
+server:
+  port: 8081                # 服务器的HTTP端口，默认为8080
+  servlet:
+    context-path: /         # 应用的访问路径
+  tomcat:
+    uri-encoding: UTF-8     # tomcat 的URI编码
+    max-threads: 800        # tomcat 最大线程数，默认为200
+    min-spare-threads: 30   # tomcat 启动初始化的线程数，默认为25
+
+# 日志配置
+logging:
+  level:
+    com.ityouzi: debug
+    org.springframework: warn
+
+
+# spring 配置
+spring:
+  # 资源信息
+  messages:
+    encoding: UTF-8
+    basename: i18n/messages   #国际化资源文件路径
+  profiles:
+    active: druid
+  # 文件上传
+  servlet:
+    multipart:
+      max-file-size: 10MB     #单个文件大小
+      max-request-size: 20MB  #设置总上传的文件大小
+  # 服务模块
+  devtools:
+    restart:
+      enabled: true           # 热部署开关
+  # redis 配置
+  redis:
+    host: localhost           # 地址
+    port: 6379                # 端口
+    # password:                 # 密码
+    timeout: 10s              # 连接超时时间
+    lettuce:
+      pool:
+        min-idle: 0           # 连接池中的最小空闲连接
+        max-idle: 8           # 连接池的最大空闲连接
+        max-active: 8         # 连接池的最大数据库连接数
+        max-wait: -1ms        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+
+# token 配置
+token:
+  header: Authorization               # 令牌自定义标识
+  secret: abcdefghijklmnopqrstuvwxyz  # 令牌密钥
+  expireTime: 30                      # 令牌有效期（默认30分钟）
+
+
+# MyBatis 配置
+mybatis:
+  type-aliases-package: com.ityouzi.project.**.domain   # 搜索指定包别名
+  mapper-locations: classpath*:mybatis/**/*Mapper.xml   # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  config-location: classpath:mybatis/mybatis-config.xml # 加载全局的配置文件
+
+
+# PageHelper 分页插件
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
