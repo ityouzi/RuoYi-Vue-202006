@@ -114,8 +114,42 @@ public class SysRoleController extends BaseController {
         return toAjax(roleService.authDataScope(role));
     }
 
+    /**
+     * 修改状态
+     *
+     * 2020/9/21 - 15:32
+     */
+    @PreAuthorize("@ss.hasPermi('system:role:edit')")
+    @Log(title = "角色管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/changeStatus")
+    public AjaxResult changeStatus(@RequestBody SysRole role){
+        roleService.checkRoleAllowed(role); // 校验角色是否允许操作
+        role.setUpdateBy(SecurityUtils.getUserName());
+        return toAjax(roleService.updateRoleStatus(role));
+    }
 
+    /**
+     * 删除角色
+     *
+     * 2020/9/21 - 15:37
+     */
+    @PreAuthorize("@ss.hasPermi('system:role:remove')")
+    @Log(title = "角色管理", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{roleIds}")
+    public AjaxResult remove(@PathVariable Long[] roleIds){
+        return toAjax(roleService.deleteRoleByIds(roleIds));
+    }
 
+    /**
+     * 获取角色选择框列表
+     *
+     * 2020/9/21 - 15:52
+     */
+    @PreAuthorize("@ss.hasPermi('system:role:query')")
+    @GetMapping("/optionselect")
+    public AjaxResult optionselect(){
+        return AjaxResult.success(roleService.selectRoleAll());
+    }
 
 
 }

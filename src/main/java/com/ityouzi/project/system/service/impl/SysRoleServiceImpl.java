@@ -11,8 +11,8 @@ import com.ityouzi.project.system.domain.SysRoleMenu;
 import com.ityouzi.project.system.mapper.SysRoleDeptMapper;
 import com.ityouzi.project.system.mapper.SysRoleMapper;
 import com.ityouzi.project.system.mapper.SysRoleMenuMapper;
+import com.ityouzi.project.system.mapper.SysUserRoleMapper;
 import com.ityouzi.project.system.service.ISysRoleService;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +37,9 @@ public class SysRoleServiceImpl implements ISysRoleService {
 
     @Autowired
     private SysRoleDeptMapper roleDeptMapper;
+
+    @Autowired
+    private SysUserRoleMapper userRoleMapper;
 
     /**
      * 根据用户ID查询角色
@@ -191,7 +194,35 @@ public class SysRoleServiceImpl implements ISysRoleService {
         return insertRoleDept(role);
     }
 
+    /**
+     * 修改角色状态
+     *
+     * @param role 角色信息
+     * @return 结果
+     */
+    @Override
+    public int updateRoleStatus(SysRole role) {
+        return roleMapper.updateRole(role);
+    }
 
+    /**
+     * 批量删除角色信息
+     *
+     * @param roleIds 需要删除的角色ID
+     * @return 结果
+     */
+    @Override
+    public int deleteRoleByIds(Long[] roleIds) {
+        for (Long roleId : roleIds){
+            checkRoleAllowed(new SysRole(roleId));
+            SysRole role = selectRoleById(roleId);
+            // 在删除前判断该角色是否由用户在使用
+            if ( countUserRoleByRoleId(roleId) > 0){
+                throw new CustomException(String.format("%1$s已分配，不能删除", role.getRoleName()));
+            }
+        }
+        return roleMapper.deleteRoleByIds(roleIds);
+    }
 
 
     /**
@@ -235,6 +266,18 @@ public class SysRoleServiceImpl implements ISysRoleService {
             rows = roleDeptMapper.batchRoleDept(list);
         }
         return rows;
+    }
+
+    /**
+     * 通过角色ID查询角色使用数量
+     *
+     * @param roleId 角色ID
+     * @return 结果
+     */
+    @Override
+    public int countUserRoleByRoleId(Long roleId)
+    {
+        return userRoleMapper.countUserRoleByRoleId(roleId);
     }
 
 

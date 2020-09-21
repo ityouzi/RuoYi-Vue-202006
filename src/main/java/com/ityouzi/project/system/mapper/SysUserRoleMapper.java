@@ -25,4 +25,12 @@ public interface SysUserRoleMapper {
      * @param userId 用户ID
      */
     int deleteUserRoleByUserId(Long userId);
+
+    /**
+     * 通过角色ID查询角色使用数量
+     *
+     * @param roleId 角色ID
+     * @return 结果
+     */
+    int countUserRoleByRoleId(Long roleId);
 }

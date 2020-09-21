@@ -74,6 +74,17 @@ public class SysDeptServiceImpl implements ISysDeptService {
         return deptTree.stream().map(TreeSelect::new).collect(Collectors.toList());
     }
 
+    /**
+     * 根据角色ID查询部门树信息
+     *
+     * @param roleId 角色ID
+     * @return 选中部门列表
+     */
+    @Override
+    public List<Integer> selectDeptListByRoleId(Long roleId) {
+        return deptMapper.selectDeptListByRoleId(roleId);
+    }
+
 
     /**
      * 递归列表

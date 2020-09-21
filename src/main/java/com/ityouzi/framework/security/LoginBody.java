@@ -1,15 +1,11 @@
 package com.ityouzi.framework.security;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @Auther: lizhen
  * @Date: 2020-06-30 09:59
  * @Description: 用户登录需要的参数对象
  */
-@Getter
-@Setter
+
 public class LoginBody {
 
     /**
@@ -32,4 +28,36 @@ public class LoginBody {
      */
     private String uuid = "";
 
+    // get&set
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 }

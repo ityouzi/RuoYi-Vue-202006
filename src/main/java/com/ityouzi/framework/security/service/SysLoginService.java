@@ -2,8 +2,6 @@ package com.ityouzi.framework.security.service;
 
 import com.ityouzi.common.constant.Constants;
 import com.ityouzi.common.exception.CustomException;
-import com.ityouzi.common.exception.user.CaptchaException;
-import com.ityouzi.common.exception.user.CaptchaExpireException;
 import com.ityouzi.common.exception.user.UserPasswordNotMatchException;
 import com.ityouzi.common.utils.MessageUtils;
 import com.ityouzi.framework.manager.AsyncManager;
@@ -56,15 +54,15 @@ public class SysLoginService {
         redisCache.deleteObject(verifyKey); // 从redis中删除图片验证码
 
         // 图片验证码不存在
-        if (captcha == null){
-            AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.error")));
-            throw new CaptchaExpireException();
-        }
-        // 图片验证码不正确
-        if (!code.equalsIgnoreCase(captcha)){
-            AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username,Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire")));
-            throw new CaptchaException();
-        }
+//        if (captcha == null){
+//            AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.error")));
+//            throw new CaptchaExpireException();
+//        }
+//        // 图片验证码不正确
+//        if (!code.equalsIgnoreCase(captcha)){
+//            AsyncManager.me().execute(AsyncFactory.recordLoginInfo(username,Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire")));
+//            throw new CaptchaException();
+//        }
         // <2>用户验证
         Authentication authentication;
 
