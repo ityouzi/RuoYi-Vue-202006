@@ -42,4 +42,36 @@ public interface ISysDeptService {
      * @return 选中部门列表
      */
     List<Integer> selectDeptListByRoleId(Long roleId);
+
+    /**
+     * 根据部门ID查询信息
+     *
+     * @param deptId 部门ID
+     * @return 部门信息
+     */
+    SysDept selectDeptById(Long deptId);
+
+    /**
+     * 校验部门名称是否唯一
+     *
+     * @param dept 部门信息
+     * @return 结果
+     */
+    String checkDeptNameUnique(SysDept dept);
+
+    /**
+     * 新增保存部门信息
+     *
+     * @param dept 部门信息
+     * @return 结果
+     */
+    int insertDept(SysDept dept);
+
+    /**
+     * 修改保存部门信息
+     *
+     * @param dept 部门信息
+     * @return 结果
+     */
+    int updateDept(SysDept dept);
 }

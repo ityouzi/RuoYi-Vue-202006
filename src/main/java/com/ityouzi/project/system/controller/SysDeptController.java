@@ -1,5 +1,9 @@
 package com.ityouzi.project.system.controller;
 
+import com.ityouzi.common.constant.UserConstants;
+import com.ityouzi.common.utils.SecurityUtils;
+import com.ityouzi.framework.aspectj.lang.annotation.Log;
+import com.ityouzi.framework.aspectj.lang.enums.BusinessType;
 import com.ityouzi.framework.web.controller.BaseController;
 import com.ityouzi.framework.web.domain.AjaxResult;
 import com.ityouzi.project.system.domain.SysDept;
@@ -8,10 +12,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Iterator;
 import java.util.List;
@@ -60,11 +62,15 @@ public class SysDeptController extends BaseController {
     }
 
     /**
+     * 根据部门编号获取详细信息
      * 
-     * 
-     * 2020/9/21 - 17:29
+     * 2021/3/10 - 21:18
      */
-    
+    @PreAuthorize("@ss.hasPermi('system:dept:query')")
+    @GetMapping(value = "/{deptId}")
+    public AjaxResult getInfo(@PathVariable Long deptId){
+        return AjaxResult.success(deptService.selectDeptById(deptId));
+    }
 
     /**
      * 获取部门下拉树列表
@@ -90,4 +96,41 @@ public class SysDeptController extends BaseController {
         return ajax;
     }
 
+    /**
+     * 新增部门
+     *
+     * 2021/3/10 - 21:19
+     */
+    @PreAuthorize("@ss.hasPermi('system:dept:add')")
+    @Log(title = "部门管理", businessType = BusinessType.INSERT)
+    @PostMapping
+    public AjaxResult add(@Validated @RequestBody SysDept dept){ // 已验证
+        if (UserConstants.NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept))){
+            return AjaxResult.error("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+        }
+        dept.setCreateBy(SecurityUtils.getUserName());  // 获取创建人名称
+        return toAjax(deptService.insertDept(dept));
+    }
+
+    /**
+     * 修改部门
+     *
+     * 2021/3/10 - 21:36
+     */
+    @PreAuthorize("@ss.hasPermi('system:dept:edit')")
+    @Log(title = "部门管理", businessType = BusinessType.UPDATE)
+    @PutMapping
+    public AjaxResult edit(@Validated @RequestBody SysDept dept){
+        if (UserConstants.NOT_UNIQUE.equals(deptService.checkDeptNameUnique(dept))){
+            return AjaxResult.error("修改部门'" + dept.getDeptName() + "'失败，部门名称已存在");
+        }
+        else if (dept.getParentId().equals(dept.getDeptId())){
+            return AjaxResult.error("修改部门'" + dept.getDeptName() + "'失败，上级部门不能是自己");
+        }
+        else if (StringUtils.equals(UserConstants.DEPT_DISABLE, dept.getStatus())){
+            return AjaxResult.error("该部门包含未停用的子部门！");
+        }
+        dept.setUpdateBy(SecurityUtils.getUserName());
+        return toAjax(deptService.updateDept(dept));
+    }
 }

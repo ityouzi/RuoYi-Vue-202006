@@ -1,5 +1,7 @@
 package com.ityouzi.project.system.service.impl;
 
+import com.ityouzi.common.constant.UserConstants;
+import com.ityouzi.common.exception.CustomException;
 import com.ityouzi.common.utils.StringUtils;
 import com.ityouzi.framework.web.domain.TreeSelect;
 import com.ityouzi.project.system.domain.SysDept;
@@ -83,6 +85,104 @@ public class SysDeptServiceImpl implements ISysDeptService {
     @Override
     public List<Integer> selectDeptListByRoleId(Long roleId) {
         return deptMapper.selectDeptListByRoleId(roleId);
+    }
+
+    /**
+     * 根据部门ID查询信息
+     *
+     * @param deptId 部门ID
+     * @return 部门信息
+     */
+    @Override
+    public SysDept selectDeptById(Long deptId) {
+        return deptMapper.selectDeptById(deptId);
+    }
+
+    /**
+     * 校验部门名称是否唯一
+     *
+     * @param dept 部门信息
+     * @return 结果
+     */
+    @Override
+    public String checkDeptNameUnique(SysDept dept) {
+        Long deptId = StringUtils.isNull(dept.getDeptId()) ? -1L : dept.getDeptId();
+        SysDept info = deptMapper.checkDeptNameUnique(dept.getDeptName(), dept.getParentId());
+
+        return null;
+    }
+
+    /**
+     * 新增保存部门信息
+     *
+     * @param dept 部门信息
+     * @return 结果
+     */
+    @Override
+    public int insertDept(SysDept dept) {
+        SysDept info = deptMapper.selectDeptById(dept.getParentId());
+        // 如果父节点不为正常状态,则不允许新增子节点
+        if (!UserConstants.DEPT_NORMAL.equals(info.getStatus())){
+            throw new CustomException("部门停用，不允许新增");
+        }
+        dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
+        return deptMapper.insertDept(dept);
+    }
+
+    /**
+     * 修改保存部门信息
+     *
+     * @param dept 部门信息
+     * @return 结果
+     */
+    @Override
+    public int updateDept(SysDept dept) {
+        SysDept newParentDept = deptMapper.selectDeptById(dept.getParentId());
+        SysDept oldDept = deptMapper.selectDeptById(dept.getDeptId());
+        if (StringUtils.isNotNull(newParentDept) && StringUtils.isNotNull(oldDept)){
+            String newAncestors = newParentDept.getAncestors() + "," + newParentDept.getDeptId();
+            String oldAncestors = oldDept.getAncestors();
+            dept.setAncestors(newAncestors);
+            // 修改子元素关系
+            updateDeptChildren(dept.getDeptId(), newAncestors, oldAncestors);
+        }
+        int result = deptMapper.updateDept(dept);
+        if (UserConstants.DEPT_NORMAL.equals(dept.getStatus())){
+            // 如果该部门是启用状态，则启用该部门的所有上级部门
+            updateParentDeptStatus(dept);
+        }
+        return result;
+    }
+
+    /**
+     * 修改该部门的父级部门状态
+     *
+     * @param dept 当前部门
+     */
+    private void updateParentDeptStatus(SysDept dept){
+        String updateBy = dept.getUpdateBy();
+        dept = deptMapper.selectDeptById(dept.getDeptId());
+        dept.setUpdateBy(updateBy);
+        deptMapper.updateDeptStatus(dept);
+    }
+
+
+    /**
+     * 修改子元素关系
+     *
+     * @param deptId 被修改的部门ID
+     * @param newAncestors 新的父ID集合
+     * @param oldAncestors 旧的父ID集合
+     */
+    public void updateDeptChildren(Long deptId, String newAncestors, String oldAncestors){
+        //根据ID查询所有子部门
+        List<SysDept> children = deptMapper.selectChildrenDeptById(deptId);
+        for (SysDept child : children){
+            child.setAncestors(child.getAncestors().replace(oldAncestors,newAncestors));
+        }
+        if (children.size()>0){
+            deptMapper.updateDeptChildren(children);
+        }
     }
 
 
