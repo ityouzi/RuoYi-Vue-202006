@@ -133,4 +133,25 @@ public class SysDeptController extends BaseController {
         dept.setUpdateBy(SecurityUtils.getUserName());
         return toAjax(deptService.updateDept(dept));
     }
+
+    /**
+     * 删除部门
+     *
+     * 2021/3/13 - 14:02
+     */
+    @PreAuthorize("@ss.hasPermi('system:dept:remove')")
+    @Log(title = "部门管理", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{deptId}")
+    public AjaxResult remove(@PathVariable Long deptId){
+        // 是否存在部门子节点、下级部门
+        if (deptService.hasChildByDeptId(deptId)){
+            return AjaxResult.error("存在下级部门，不允许删除");
+        }
+        // 查询部门是否存在用户、该部门是否还有用户在使用
+        if (deptService.checkDeptExistUser(deptId)){
+            return AjaxResult.error("部门存在用户，不允许删除");
+        }
+        return toAjax(deptService.deleteDeptById(deptId));
+    }
+
 }

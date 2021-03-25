@@ -155,6 +155,41 @@ public class SysDeptServiceImpl implements ISysDeptService {
     }
 
     /**
+     * 是否存在子节点
+     *
+     * @param deptId 部门ID
+     * @return 结果
+     */
+    @Override
+    public boolean hasChildByDeptId(Long deptId) {
+        int result = deptMapper.hasChildByDeptId(deptId);
+        return result > 0 ? true : false;
+    }
+
+    /**
+     * 查询部门是否存在用户
+     *
+     * @param deptId 部门ID
+     * @return 结果 true 存在 false 不存在
+     */
+    @Override
+    public boolean checkDeptExistUser(Long deptId) {
+        int result = deptMapper.checkDeptExistUser(deptId);
+        return result > 0 ? true : false;
+    }
+
+    /**
+     * 删除部门管理信息
+     *
+     * @param deptId 部门ID
+     * @return 结果
+     */
+    @Override
+    public int deleteDeptById(Long deptId) {
+        return deptMapper.deleteDeptById(deptId);
+    }
+
+    /**
      * 修改该部门的父级部门状态
      *
      * @param dept 当前部门

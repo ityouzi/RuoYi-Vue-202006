@@ -82,4 +82,28 @@ public interface SysDeptMapper {
      * @return 结果
      */
     int updateDeptChildren(@Param("depts") List<SysDept> depts);
+
+    /**
+     * 是否存在子节点
+     *
+     * @param deptId 部门ID
+     * @return 结果
+     */
+    int hasChildByDeptId(Long deptId);
+
+    /**
+     * 查询部门是否存在用户
+     *
+     * @param deptId 部门ID
+     * @return 结果
+     */
+    int checkDeptExistUser(Long deptId);
+
+    /**
+     * 删除部门管理信息
+     *
+     * @param deptId 部门ID
+     * @return 结果
+     */
+    int deleteDeptById(Long deptId);
 }

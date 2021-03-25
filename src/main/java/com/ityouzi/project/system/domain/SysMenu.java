@@ -4,7 +4,6 @@ package com.ityouzi.project.system.domain;
 import com.ityouzi.framework.web.domain.BaseEntity;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.springframework.data.annotation.Transient;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -47,17 +46,19 @@ public class SysMenu extends BaseEntity {
     /** 类型（M目录 C菜单 F按钮） */
     private String menuType;
 
-    /** 菜单状态:0显示,1隐藏 */
+    /** 显示状态（0显示 1隐藏） */
     private String visible;
 
-    /** 权限字符串 一般格式为 ${大模块}:${小模块}:{操作} */
+    /** 菜单状态（0显示 1隐藏） */
+    private String status;
+
+    /** 权限字符串 */
     private String perms;
 
     /** 菜单图标 */
     private String icon;
 
     /** 子菜单 */
-    @Transient
     private List<SysMenu> children = new ArrayList<SysMenu>();
 
     public Long getMenuId()
@@ -166,6 +167,16 @@ public class SysMenu extends BaseEntity {
         this.visible = visible;
     }
 
+    public String getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(String status)
+    {
+        this.status = status;
+    }
+
     @Size(min = 0, max = 100, message = "权限标识长度不能超过100个字符")
     public String getPerms()
     {
@@ -200,22 +211,23 @@ public class SysMenu extends BaseEntity {
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-            .append("menuId", getMenuId())
-            .append("menuName", getMenuName())
-            .append("parentId", getParentId())
-            .append("orderNum", getOrderNum())
-            .append("path", getPath())
-            .append("component", getComponent())
-            .append("isFrame", getIsFrame())
-            .append("menuType", getMenuType())
-            .append("visible", getVisible())
-            .append("perms", getPerms())
-            .append("icon", getIcon())
-            .append("createBy", getCreateBy())
-            .append("createTime", getCreateTime())
-            .append("updateBy", getUpdateBy())
-            .append("updateTime", getUpdateTime())
-            .append("remark", getRemark())
-            .toString();
+                .append("menuId", getMenuId())
+                .append("menuName", getMenuName())
+                .append("parentId", getParentId())
+                .append("orderNum", getOrderNum())
+                .append("path", getPath())
+                .append("component", getComponent())
+                .append("isFrame", getIsFrame())
+                .append("menuType", getMenuType())
+                .append("visible", getVisible())
+                .append("status ", getStatus())
+                .append("perms", getPerms())
+                .append("icon", getIcon())
+                .append("createBy", getCreateBy())
+                .append("createTime", getCreateTime())
+                .append("updateBy", getUpdateBy())
+                .append("updateTime", getUpdateTime())
+                .append("remark", getRemark())
+                .toString();
     }
 }

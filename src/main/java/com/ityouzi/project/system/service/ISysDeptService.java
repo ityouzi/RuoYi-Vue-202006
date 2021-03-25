@@ -74,4 +74,28 @@ public interface ISysDeptService {
      * @return 结果
      */
     int updateDept(SysDept dept);
+
+    /**
+     * 是否存在部门子节点
+     *
+     * @param deptId 部门ID
+     * @return 结果
+     */
+    boolean hasChildByDeptId(Long deptId);
+
+    /**
+     * 查询部门是否存在用户
+     *
+     * @param deptId 部门ID
+     * @return 结果 true 存在 false 不存在
+     */
+    boolean checkDeptExistUser(Long deptId);
+
+    /**
+     * 删除部门管理信息
+     *
+     * @param deptId 部门ID
+     * @return 结果
+     */
+    int deleteDeptById(Long deptId);
 }
