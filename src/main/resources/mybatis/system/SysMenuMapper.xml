@@ -87,6 +87,12 @@
         </set>
         where menu_id = #{menuId}
     </update>
+
+    <!--删除菜单-->
+    <delete id="deleteMenuById" parameterType="long">
+        delete from sys_menu where menu_id = #{menuId}
+    </delete>
+
     <select id="selectMenuPermsByUserId" parameterType="long" resultType="java.lang.String">
         select distinct m.perms
         from sys_menu m
@@ -174,6 +180,12 @@
         <include refid="selectMenuVo"/>
         where menu_name = #{menuName} and parent_id = #{parentId}
     </select>
+
+    <!--是否存在菜单子节点-->
+    <select id="hasChildByMenuId" parameterType="long" resultType="java.lang.Integer">
+        select count (1) from sys_menu where parent_id = #{menuId}
+    </select>
+
 
 
 </mapper>

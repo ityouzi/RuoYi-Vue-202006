@@ -112,4 +112,28 @@ public interface ISysMenuService {
      * @return 结果
      */
     int updateMenu(SysMenu menu);
+
+    /**
+     * 是否存在菜单子节点
+     *
+     * @param menuId 菜单ID
+     * @return 结果 true 存在 false 不存在
+     */
+    boolean hasChildByMenuId(Long menuId);
+
+    /**
+     * 查询被删除的菜单是否存在角色的分配
+     *
+     * @param menuId 菜单ID
+     * @return 结果 true 存在 false 不存在
+     */
+    boolean checkMenuExistRole(Long menuId);
+
+    /**
+     * 删除菜单管理信息
+     *
+     * @param menuId 菜单ID
+     * @return 结果
+     */
+    int deleteMenuById(Long menuId);
 }

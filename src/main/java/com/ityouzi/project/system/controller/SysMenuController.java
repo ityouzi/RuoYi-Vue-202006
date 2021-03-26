@@ -13,7 +13,6 @@ import com.ityouzi.framework.web.controller.BaseController;
 import com.ityouzi.framework.web.domain.AjaxResult;
 import com.ityouzi.project.system.domain.SysMenu;
 import com.ityouzi.project.system.service.ISysMenuService;
-import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -127,4 +126,24 @@ public class SysMenuController extends BaseController {
         menu.setUpdateBy(SecurityUtils.getUserName());
         return toAjax(menuService.updateMenu(menu));
     }
+
+    /**
+     * 删除菜单
+     *
+     * @author lizhen
+     * 2021/3/26 - 10:24
+     */
+    @PreAuthorize("@ss.hasPermi('system:menu:remove')")
+    @Log(title = "菜单管理", businessType = BusinessType.DELETE)
+    @DeleteMapping("/{menuId}")
+    public AjaxResult remove(@PathVariable("menuId") Long menuId){
+        if (menuService.hasChildByMenuId(menuId)) {
+            return AjaxResult.error("存在子菜单,不允许删除");
+        }
+        if (menuService.checkMenuExistRole(menuId)){
+            return AjaxResult.error("菜单已分配,不允许删除");
+        }
+        return toAjax(menuService.deleteMenuById(menuId));
+    }
+
 }

@@ -30,4 +30,12 @@ public interface SysRoleMenuMapper {
      * @return 结果
      */
     int deleteRoleMenuByRoleId(Long roleId);
+
+    /**
+     * 查询菜单使用数量
+     *
+     * @param menuId 菜单ID
+     * @return 结果
+     */
+    int checkMenuExistRole(Long menuId);
 }

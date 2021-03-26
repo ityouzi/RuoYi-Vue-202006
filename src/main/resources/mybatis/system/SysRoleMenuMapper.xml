@@ -22,4 +22,9 @@
     <delete id="deleteRoleMenuByRoleId" parameterType="Long">
         delete from sys_role_menu where role_id = #{roleId}
     </delete>
+
+    <!--查询菜单使用数量-->
+    <select id="checkMenuExistRole" parameterType="long" resultType="java.lang.Integer">
+        select count (1) from sys_role_menu where menu_id = #{menuId}
+    </select>
 </mapper>

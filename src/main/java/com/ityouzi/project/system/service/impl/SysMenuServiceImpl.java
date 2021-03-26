@@ -10,6 +10,7 @@ import com.ityouzi.project.system.domain.SysUser;
 import com.ityouzi.project.system.domain.vo.MetaVo;
 import com.ityouzi.project.system.domain.vo.RouterVo;
 import com.ityouzi.project.system.mapper.SysMenuMapper;
+import com.ityouzi.project.system.mapper.SysRoleMenuMapper;
 import com.ityouzi.project.system.service.ISysMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,9 @@ import java.util.*;
 public class SysMenuServiceImpl implements ISysMenuService {
     @Autowired
     private SysMenuMapper menuMapper;
+
+    @Autowired
+    private SysRoleMenuMapper roleMenuMapper;
 
 
     /**
@@ -212,6 +216,41 @@ public class SysMenuServiceImpl implements ISysMenuService {
     @Override
     public int updateMenu(SysMenu menu) {
         return menuMapper.updateMenu(menu);
+    }
+
+    /**
+     * 是否存在菜单子节点
+     *
+     * @param menuId 菜单ID
+     * @return 结果 true 存在 false 不存在
+     */
+    @Override
+    public boolean hasChildByMenuId(Long menuId) {
+        int result = menuMapper.hasChildByMenuId(menuId);
+        return result > 0 ? true : false;
+    }
+
+    /**
+     * 查询菜单使用数量
+     *
+     * @param menuId 菜单ID
+     * @return 结果
+     */
+    @Override
+    public boolean checkMenuExistRole(Long menuId) {
+        int result = roleMenuMapper.checkMenuExistRole(menuId);
+        return result > 0 ? true : false;
+    }
+
+    /**
+     * 删除菜单管理信息
+     *
+     * @param menuId 菜单ID
+     * @return 结果
+     */
+    @Override
+    public int deleteMenuById(Long menuId) {
+        return menuMapper.deleteMenuById(menuId);
     }
 
     /**
