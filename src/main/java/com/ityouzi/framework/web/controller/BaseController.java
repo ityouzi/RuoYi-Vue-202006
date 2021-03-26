@@ -1,10 +1,15 @@
 package com.ityouzi.framework.web.controller;
 
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ityouzi.common.constant.HttpStatus;
 import com.ityouzi.common.utils.DateUtils;
+import com.ityouzi.common.utils.StringUtils;
+import com.ityouzi.common.utils.sql.SqlUtil;
 import com.ityouzi.framework.web.domain.AjaxResult;
+import com.ityouzi.framework.web.page.PageDomain;
 import com.ityouzi.framework.web.page.TableDataInfo;
+import com.ityouzi.framework.web.page.TableSupport;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -39,6 +44,13 @@ public class BaseController {
      * 设置请求分页数据
      */
     protected void startPage(){
+        PageDomain pageDomain = TableSupport.buildPageRequest();
+        Integer pageNum = pageDomain.getPageNum();
+        Integer pageSize = pageDomain.getPageSize();
+        if (StringUtils.isNotNull(pageNum) && StringUtils.isNotNull(pageSize)){
+            String orderBy = SqlUtil.escapeOrderBySql(pageDomain.getOrderBy());
+            PageHelper.startPage(pageNum, pageSize, orderBy);
+        }
 
     }
 
